@@ -1,0 +1,50 @@
+Comment @
+
+Program:    Copy_String_Backwards.asm
+Student:     Bryan Oliande
+Date Due:        02/26/15
+Class:       CSCI 241
+Instructor:  Mr. Ding
+Description: Write a program using the LOOP instruction with indirect operands (not indexed operands) that copies a string 
+from source to target, reversing the character order in the process
+
+@
+
+INCLUDE Irvine32.inc
+
+.data
+source  byte  "This is the source string",0
+target  byte  SIZEOF source DUP(0)
+
+.code
+main proc
+
+	mov  esi,OFFSET source
+	add esi,SIZEOF source
+	sub esi,2 ; esi now points to the last non-null char in source
+	mov edi,OFFSET target
+	mov ecx,SIZEOF source
+	sub ecx,1 ; not copying the null
+
+L1:
+	mov al,[esi]		; get a character from source
+	mov  [edi],al		; store it in the target
+	inc  edi			;incerementing target so it can copy the next char
+	dec esi				; move to previous character in source
+	loop L1					; repeat for entire string
+
+	mov al,0
+	mov [edi],al	;null-termninate target
+
+	mov  edx,OFFSET source
+    call WriteString
+
+	call Crlf
+
+	mov edx,OFFSET target
+	call WriteString
+
+
+	invoke ExitProcess,0
+main endp
+end main
